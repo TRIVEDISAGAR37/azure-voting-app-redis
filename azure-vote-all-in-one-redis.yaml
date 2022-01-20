@@ -57,7 +57,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: azure-vote-front
-        image: containerregistry15656978731176393655.azurecr.io/azure-vote-front:latest
+        image: containerregistry16372784740448139945.azurecr.io/azure-vote-front:latest
         ports:
         - containerPort: 80
         resources:
@@ -69,6 +69,7 @@ spec:
         - name: REDIS
           value: "azure-vote-back"
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -79,3 +80,21 @@ spec:
   - port: 80
   selector:
     app: azure-vote-front
+
+--- 
+
+apiVersion: v1
+kind: CronJob
+metadata:
+  name: azure-vote-front-update
+spec:
+  schedule: "0 17 * * *"
+  jobTemplate:
+    spec: 
+      template:
+        spec:
+          containers: 
+          - name: azure-vote-front-update
+            image: containerregistry16372784740448139945.azurecr.io/azure-vote-front:latest
+            imagePullPolicy: IfNotPresent
+          restartPolicy: OnFailure
